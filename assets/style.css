@@ -1,0 +1,34 @@
+body{
+    height: 100%;
+}
+
+ label {
+    margin-top: 10px;
+}
+
+#inputContainer input {
+    width: 100%;
+}
+
+.chairimg {
+    height: 550px;
+}
+
+.delete-checkbox{
+    position:absolute;
+
+    left: 40px;
+    top:40px;
+}
+
+.container-wrapper{
+    height: 100vh;
+}
+
+.card{
+    width: 16rem;
+}
+
+.alert{
+    display: none;
+}
