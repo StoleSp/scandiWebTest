@@ -8,7 +8,7 @@ let formValid = true;
 
 function checkSku() {
     let skuInputValue = skuInput.value;
-    $.ajax({
+    $ajax = $.ajax({
         type: "POST",
         url: "checkSku.php",
         data: { id: skuInputValue },
@@ -137,5 +137,6 @@ saveBtn.addEventListener("click", function (event) {
     validateSelectableInputs(selectableInputs.inputs);
     if (formValid) {
         document.getElementById("product_form").submit();
+        $ajax.abort();
     }
 });
