@@ -26,14 +26,19 @@ class Product
     }
 
   //class method that selects all SKUs from the database so they could be checked if any of them is equal to what is written in the SKU input in the form
-    public function checkSku(){
+    public function checkSku($id){
         $sku = "SELECT SKU FROM book UNION SELECT SKU FROM chair UNION SELECT SKU FROM dvd_disc;";
         $stmt = $this->getConn()->prepare($sku);
         $stmt->execute();
         $dbSku = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-       return $dbSku;
 
+        foreach( $dbSku as $value){
+            foreach($value as $val){
+                while($id =='' || $id == $val){
+                    return true;
+                } 
+            }   
+        }
     }
 
 }

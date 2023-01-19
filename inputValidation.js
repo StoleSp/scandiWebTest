@@ -4,7 +4,11 @@ let skuInput = document.getElementById("sku");
 let nameInput = document.getElementById("name");
 let priceInput = document.getElementById("price");
 let incorrectData = "Please, provide the data of indicated type!";
-let formValid = true;
+let formValidDbSku = false;
+let formValidSku = false;
+let formValidName = false;
+let formValidPrice = false;
+let formValidDimensions = [];
 
 function checkSku() {
     let skuInputValue = skuInput.value;
@@ -13,16 +17,17 @@ function checkSku() {
         url: "checkSku.php",
         data: { id: skuInputValue },
         success: function (data) {
+            // console.log(data);
             //here its checked if there are returned data.
             if (!data) {
                 alertDanger.style.display = "none";
                 alertDanger.innerHTML = '';
-                formValid = true;
+                formValidDbSku = true;
                 skuInput.classList.remove("is-invalid");
             } else {
                 alertDanger.style.display = "block";
                 alertDanger.innerHTML = incorrectData;
-                formValid = false;
+                formValidDbSku = false;
                 skuInput.classList.add("is-invalid");
             }
         }
@@ -34,17 +39,17 @@ function validateSKU() {
     let sku = skuInput.value;
     if (sku === "") {
         skuInput.classList.add("is-invalid");
-        formValid = false;
+        formValidSku = false;
     } else {
         let skuRegex = /^[A-Za-z0-9]+$/;
         if (!skuRegex.test(sku)) {
             skuInput.classList.add("is-invalid");
-            formValid = false;
+            formValidSku = false;
             alertDanger.style.display = "block";
             alertDanger.innerHTML = incorrectData;
         } else {
             skuInput.classList.remove("is-invalid");
-            formValid = true;
+            formValidSku = true;
             alertDanger.style.display = "none";
             alertDanger.innerHTML = '';
         }
@@ -55,17 +60,17 @@ function validateName() {
     let name = nameInput.value;
     if (name === "") {
         nameInput.classList.add("is-invalid");
-        formValid = false;
+        formValidName = false;
     } else {
         let nameRegex = /^[A-Za-z ]+$/;
         if (!nameRegex.test(name)) {
             nameInput.classList.add("is-invalid");
-            formValid = false;
+            formValidName = false;
             alertDanger.style.display = "block";
             alertDanger.innerHTML = incorrectData;
         } else {
             nameInput.classList.remove("is-invalid");
-            formValid = true;
+            formValidName = true;
             alertDanger.style.display = "none";
             alertDanger.innerHTML = '';
         }
@@ -77,17 +82,17 @@ function validatePrice() {
     let price = priceInput.value;
     if (price === "") {
         priceInput.classList.add("is-invalid");
-        formValid = false;
+        formValidPrice = false;
     } else {
         let priceRegex = /^\d+(\.\d{1,2})?$/;
         if (!priceRegex.test(price)) {
             priceInput.classList.add("is-invalid");
-            formValid = false;
+            formValidPrice = false;
             alertDanger.style.display = "block";
             alertDanger.innerHTML = incorrectData;
         } else {
             priceInput.classList.remove("is-invalid");
-            formValid = true;
+            formValidPrice = true;
             alertDanger.style.display = "none";
             alertDanger.innerHTML = '';
         }
@@ -95,21 +100,21 @@ function validatePrice() {
 }
 
 function validateSelectableInputs(inputs) {
-    inputs.forEach((input) => {
+    inputs.forEach((input,index) => {
         const value = input.value;
         if (value === '') {
             input.classList.add("is-invalid");
-            formValid = false;
+            formValidDimensions[index] = false;
         } else {
             let heightRegex = /^\d+(\.\d{1,2})?$/;
             if (!heightRegex.test(value)) {
                 input.classList.add("is-invalid");
-                formValid = false;
+                formValidDimensions[index] = false;
                 alertDanger.style.display = "block";
                 alertDanger.innerHTML = incorrectData;
             } else {
                 input.classList.remove("is-invalid");
-                formValid = true;
+                formValidDimensions[index] = true;
                 alertDanger.style.display = "none";
                 alertDanger.innerHTML = '';
             }
@@ -135,7 +140,7 @@ saveBtn.addEventListener("click", function (event) {
     validateName();
     validatePrice();
     validateSelectableInputs(selectableInputs.inputs);
-    if (formValid) {
+    if (formValidDbSku && formValidSku && formValidName && formValidPrice && validateDimensions) {
         document.getElementById("product_form").submit();
         $ajax.abort();
     }

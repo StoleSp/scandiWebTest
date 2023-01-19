@@ -19,6 +19,7 @@ const inputElements = {
 
     const height = document.createElement('input');
     height.type = 'text';
+    height.required;
     height.name = 'height';
     height.id = 'height';
     height.setAttribute("class", "form-control");
@@ -82,20 +83,27 @@ function onLoad() {
 window.onload = onLoad;
 
 
-
+let validateDimensions = false;
 
 inputType.addEventListener('change', (event) => {
   inputContainer.innerHTML = '';
+  validateDimensions = false;
+  // console.log('changeVal:',validateDimensions)
   const selectedValue = event.target.value;
   const inputs = inputElements[selectedValue]();
+  formValidDimensions = Array(inputs.length).fill(true);
   inputs.forEach((input) => inputContainer.appendChild(input));
   let inputContainerInputs = inputContainer.querySelectorAll("input");
   selectableInputs.inputs = inputContainerInputs;
   selectableInputs.inputs.forEach((input) => {
     input.addEventListener("input", () => {
       validateSelectableInputs(selectableInputs.inputs);
+      validateDimensions = formValidDimensions.every(element => element === true);
+      // console.log('inputval:',validateDimensions)
     });
+    
   });
+
 });
 
 

@@ -13,18 +13,18 @@
 
 <body>
     <div class="alert alert-danger position-absolute col-6 offset-3" id="alert"></div>
-    <form action="addingProducts.php" method="POST" id="product_form">
-        <div class="navbar py-4 ">
-            <h1>Product Add</h1>
 
-            <div class="buttons">
-                <button id="save-product-btn" type="submit" class="btn btn btn-outline-dark">Save</button>
-                <button id="cancel-product-btn" class="btn btn btn-outline-dark">Cancel</button>
-            </div>
+    <div class="navbar py-4 ">
+        <h1>Product Add</h1>
 
+        <div class="buttons">
+            <button id="save-product-btn" class="btn btn btn-outline-dark">Save</button>
+            <button id="cancel-product-btn" class="btn btn btn-outline-dark">Cancel</button>
         </div>
 
-        <hr class="bg-dark m-0">
+    </div>
+    <hr class="bg-dark m-0">
+    <form action="addingProducts.php" method="POST" id="product_form">
         <div class="d-flex bg-light">
             <div class="d-flex flex-column w-25 p-3 border border-dark-50 rounded mt-3 ml-3 bg-white ">
                 <label for="sku">SKU:</label>
