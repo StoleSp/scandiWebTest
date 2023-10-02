@@ -1,0 +1,21 @@
+body{
+    position: relative;
+    padding-bottom: 80px;
+    margin: 0;
+    min-height: 100vh;
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+}
+
+.delete-checkbox{
+    position: absolute;
+    left: 15px;
+}
+
+#alertDanger {
+    display: none;
+}

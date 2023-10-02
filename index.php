@@ -1,107 +1,89 @@
 <?php
+require_once './Product/autoload.php';
+Autoloader::register();
 
+use Product\Product;
 
-
-require_once "./products.php";
-require_once "./furniture.php";
-require_once "./book.php";
-require_once "./disc.php";
-require_once "./functions.php";
-
-
-
-$book = new Book();
-$book->displayBook();
-
-$disc = new DVD();
-$disc->displayDisc();
-
-$furniture = new Furniture();
-$furniture->displayFurniture();
-
-
-//this is an empty array in which data from db and new $p elements(notations) are aded. proccess is reapeated for each database table 
-$re_dvddisk = array();
-
-foreach ($disc->displayDisc() as $p) {
-    $p["table_name"] = "dvd_disc";
-    $p["values"] = "Size: " . $p["size_mb"];
-    array_push($re_dvddisk, $p);
-};
-
-$re_book = array();
-
-foreach ($book->displayBook() as $p) {
-    $p["table_name"] = "book";
-    $p["values"] = "Weight: " . $p["weight_kg"];
-    array_push($re_book, $p);
-};
-
-$re_furniture = array();
-
-foreach ($furniture->displayFurniture() as $p) {
-    $p["table_name"] = "chair";
-    $p["values"] = "Dimensions: " . $p["height_cm"] . " x " . $p["width_cm"] . " x " . $p["length_cm"];
-    array_push($re_furniture , $p);
-};
-
-//all 3 arrays are merged in one array $r and than from it with loop the cards are printed.
-$r = array_merge($re_furniture , $re_book, $re_dvddisk);
-
+$product = new Product();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product list</title>
-
-    <link rel="stylesheet" href="./assets/bootstrap-4.6.2-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/style.css">
+    <title>Product List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <form action="deleteProduct.php" method="GET">
-        <div>
-            <div class="navbar navbar-light py-4">
-                <h1>Product list</h1>
-                <div class="buttons">
-                    <a href="addProduct.php"><button id="add-product-btn" class="btn btn btn-outline-dark">ADD</button></a>
-                    <button id="delete-product-btn" class="btn btn btn-outline-dark" type="submit">MASS DELETE</button>
-                </div>
+    <form action="./actions/deleteProduct.php" method="post">
 
+        <!-- header -->
+        <div class="d-flex justify-content-between align-items-center py-2 px-3">
+            <h1>
+                Product List
+            </h1>
+            <div>
+                <a href="addProduct.php" class="btn btn-outline-dark mx-3"> ADD </a>
+                <button type="submit" class="btn btn-outline-dark" id="delete-product-btn">
+                    MASS DELETE
+                </button>
             </div>
-            <hr class="bg-dark m-0 p-0">
-            <div class="bg-light container-wrapper">
-                <div class="card-container  d-flex justify-content-between p-4 flex-wrap">
-                    <?php
-                    foreach ($r as $product) {
-                    ?>
-                        <div class="card text-center mb-4">
-                            <input type="checkbox" class="delete-checkbox" id="<?= $product['id']; ?>" value="<?= $product["table_name"]; ?>" name="<?= $product['id'] ?>">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $product['SKU']; ?></h5>
-                                <p class="card-text"><?= $product['name']; ?></p>
-                                <p class="card-text"><?= $product['price_$']; ?></p>
-                                <p class="card-text"><?= $product['values']; ?></p>
 
-                            </div>
+        </div>
+
+        <hr class="py-0 my-0 mx-3 border border-dark border-2  opacity-75">
+
+        <!-- main content -->
+        <div class="container">
+            <div class=" d-flex flex-wrap justify-content-evenly py-5">
+
+                <?php
+                foreach ($product->display() as $productData) {
+
+                    $productType = ucfirst($productData->type);
+                    $className = 'Product\\' . $productType;
+
+                    $productAtributes = new $className;
+                    $formattedDimensions = $productAtributes->displayAtribute($productData->id);
+
+                    // print_r($formattedDimensions);
+
+                ?>
+
+                    <div class="card mt-3 text-center" style="width: 18rem;">
+                        <div class="card-body">
+                            <input type="checkbox" class="delete-checkbox" name="selected[]" value="<?= $productData->id  ?>" id="<?= $productData->id  ?>">
+                            <p class="card-text">SKU:<?= $productData->sku ?></p>
+                            <p class="card-text"><?= $productData->name  ?></p>
+                            <p class="card-text"><?= $product->checkDecimal($productData->price) ?>$</p>
+                            <p class="card-text"><?=
+                                                     $formattedDimensions
+                                                    ?></p>
                         </div>
-                    <?php }
-                    ?>
-                </div>
+                    </div>
+
+                <?php } ?>
             </div>
+
         </div>
     </form>
 
-    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-    <script src="./assets/bootstrap-4.6.2-dist/js/bootstrap.min.js"></script>
-    <script src="./index.js"></script>
+    <!-- footer -->
+    <footer>
+        <hr class="py-0 my-0 mx-3 border border-dark border-2  opacity-75">
+        <div class="d-flex justify-content-center py-4">
+            <p class="fw-semibold fst-italic p-0 m-0">
+                Scandiweb Test Assigment
+            </p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="js/index.js"></script>
 </body>
 
 </html>
